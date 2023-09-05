@@ -1,21 +1,23 @@
 import * as React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View, Text } from "react-native"; // Import Text from 'react-native'
 import Button from "../components/Button";
 import FormTextInput from "../components/FormTextInput";
 import imageLogo from "../assets/images/logo.png"
-
+import axios from "axios";
 import colors from "../config/colors";
 import strings from "../config/string";
 
 interface State {
   email: string;
   password: string;
+  message: string;
 }
 
 class LoginScreen extends React.Component<{}, State> {
   readonly state: State = {
     email: "",
-    password: ""
+    password: "",
+    message: ""
   };
 
   handleEmailChange = (email: string) => {
@@ -26,8 +28,22 @@ class LoginScreen extends React.Component<{}, State> {
     this.setState({ password: password });
   };
 
-  handleLoginPress = () => {
-    console.log("Login button pressed");
+  handleLoginPress = async () => {
+    try {
+      const response = await axios.post('http://192.168.100.245:8000/api/login', {
+        email: this.state.email,
+        password: this.state.password,
+      });
+
+      if (response.status === 201) {
+        this.setState({ message: 'Login successful' });
+      } else {
+        this.setState({ message: 'Login failed' });
+      }
+    } catch (error) {
+      this.setState({ message: 'An error occurred during Login' });
+      console.error('An error occurred:', error);
+    }
   };
 
   render() {
@@ -44,8 +60,10 @@ class LoginScreen extends React.Component<{}, State> {
             value={this.state.password}
             onChangeText={this.handlePasswordChange}
             placeholder={strings.PASSWORD_PLACEHOLDER}
+            secureTextEntry={true}
           />
           <Button label={strings.LOGIN} onPress={this.handleLoginPress} />
+          <Text>{this.state.message}</Text>
         </View>
       </View>
     );
