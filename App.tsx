@@ -1,2 +1,3 @@
 import LoginScreen from "./src/screens/LoginScreen";
-export default LoginScreen;
+import RegisterScreen from "./src/screens/RegisterScreen";
+export default RegisterScreen;

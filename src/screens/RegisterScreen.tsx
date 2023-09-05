@@ -1,69 +1,115 @@
-import React, { Component } from 'react';
-import { View, TextInput, Button, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native'; // Impor Image
 import axios from 'axios';
+import logoImage from "../assets/images/register.png"
 
-class RegisterScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      email: '',
-      password: '',
-    };
-  }
 
-  handleNameChange = (name) => {
-    this.setState({ name });
-  };
+const RegisterScreen: React.FC = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [cPassword, setCPassword] = useState('');
+  const [message, setMessage] = useState('');
 
-  handleEmailChange = (email) => {
-    this.setState({ email });
-  };
-
-  handlePasswordChange = (password) => {
-    this.setState({ password });
-  };
-
-  handleRegisterPress = async () => {
+  const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/register', {
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
+      const response = await axios.post('http://192.168.100.245:8000/api/register', {
+        name,
+        email,
+        password,
+        c_password: cPassword,
       });
 
-      // Handle success, e.g., navigate to the login screen
-      Alert.alert('Registration Successful', 'You can now log in.');
-      this.props.navigation.navigate('Login');
+      if (response.status === 201) {
+        setMessage('Registration successful');
+      } else {
+        setMessage('Registration failed');
+      }
     } catch (error) {
-      // Handle registration error
-      Alert.alert('Registration Failed', 'An error occurred during registration.');
+      setMessage('An error occurred during registration');
+      console.error('An error occurred:', error);
     }
   };
 
-  render() {
-    return (
-      <View>
-        <TextInput
-          value={this.state.name}
-          onChangeText={this.handleNameChange}
-          placeholder="Name"
-        />
-        <TextInput
-          value={this.state.email}
-          onChangeText={this.handleEmailChange}
-          placeholder="Email"
-        />
-        <TextInput
-          value={this.state.password}
-          onChangeText={this.handlePasswordChange}
-          placeholder="Password"
-          secureTextEntry={true}
-        />
-        <Button title="Register" onPress={this.handleRegisterPress} />
-      </View>
-    );
-  }
-}
+  return (
+    <View style={styles.container}>
+      {/* Tambahkan gambar/logo di sini */}
+      <Image source={logoImage} style={styles.logo} />
+
+      <Text style={styles.header}>App Project</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        onChangeText={(text) => {
+          setName(text);
+          setMessage('');
+        }}
+        value={name}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        onChangeText={(text) => {
+          setEmail(text);
+          setMessage('');
+        }}
+        value={email}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        onChangeText={(text) => {
+          setPassword(text);
+          setMessage('');
+        }}
+        value={password}
+        secureTextEntry={true}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        onChangeText={(text) => {
+          setCPassword(text);
+          setMessage('');
+        }}
+        value={cPassword}
+        secureTextEntry={true}
+      />
+      {message ? <Text style={styles.message}>{message}</Text> : null}
+      <Button title="Register" onPress={handleRegister} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  header: {
+    fontSize: 24,
+    marginBottom: 16,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 12,
+    padding: 8,
+  },
+  message: {
+    color: 'red',
+    marginTop: 12,
+  },
+  logo: {
+    width: 100, // Sesuaikan ukuran logo sesuai kebutuhan
+    height: 100,
+    resizeMode: 'contain', // Sesuaikan dengan tipe gambar Anda
+    marginBottom: 16,
+  },
+});
 
 export default RegisterScreen;
