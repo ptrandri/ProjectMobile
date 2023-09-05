@@ -1,3 +1,4 @@
-import LoginScreen from "./src/screens/LoginScreen";
-import RegisterScreen from "./src/screens/RegisterScreen";
-export default RegisterScreen;
+import StackComponent from "./src/routes/Stack";
+export default function app() {
+  return <StackComponent />
+}
