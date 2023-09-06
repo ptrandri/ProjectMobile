@@ -3,7 +3,6 @@ import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
 import axios from 'axios';
 import logoImage from "../assets/images/register.png"
 
-
 const RegisterScreen: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -33,7 +32,6 @@ const RegisterScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Tambahkan gambar/logo di sini */}
       <Image source={logoImage} style={styles.logo} />
 
       <Text style={styles.header}>App Project</Text>
